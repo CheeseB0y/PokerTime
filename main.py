@@ -8,6 +8,7 @@ import math
 import csv
 import tkinter as tk
 from tkinter import filedialog
+from tktooltip import ToolTip
 from pathlib import Path
 from PIL import Image, ImageTk
 
@@ -149,7 +150,10 @@ class MenuBar:
         )
         option_menu.add_command(
             label="Game Overview",
-            command=lambda: GameOverview(self.root, game_page.game_state.rounds),
+            command=lambda: GameOverview(game_page, game_page.game_state.rounds),
+        )
+        option_menu.add_command(
+            label="Settings", command=lambda: SettingsPage(game_page)
         )
         option_menu.add_command(label="Restart Game", command=game_page.restart_game)
         option_menu.add_command(label="Exit", command=sys.exit)
@@ -570,6 +574,15 @@ class GamePage:
         self.refresh_round_values()
 
     def restart_timer(self):
+        """
+        Restarts timer for current round
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         self.timer.pause()
         self.stop_flashing()
         self.timer.time_remaining = self.timer.game_page.game_state.time * 60
@@ -856,8 +869,8 @@ class GameOverview:
     Basic overview page to see all round data
     """
 
-    def __init__(self, root, rounds):
-        window = tk.Toplevel(root)
+    def __init__(self, ctx, rounds):
+        window = tk.Toplevel(ctx.root)
         window.title("Game Overview")
         window.geometry("800x600")
         window.configure(bg=BG_COLOR)
@@ -901,6 +914,29 @@ class GameOverview:
             tk.Label(b_blind_column, text=r.b_blind, bg="black", fg="white").grid(
                 row=index + 1, column=3, padx=10, pady=10, sticky="NSWE"
             )
+
+
+class SettingsPage:
+    """
+    Settings window for application preferences
+    """
+
+    def __init__(self, ctx):
+        window = tk.Toplevel(ctx.root)
+        window.title("Settings")
+        window.geometry("800x600")
+        window.configure(bg=BG_COLOR)
+
+        sound_checkbox = tk.Checkbutton(window, text="Play sound on round finish")
+        sound_checkbox.pack()
+        flash_checkbox = tk.Checkbutton(window, text="Flash screen on round finish")
+        flash_checkbox.pack()
+        automatic_round_start_checkbox = tk.Checkbutton(
+            window, text="Start next round automatically"
+        )
+        automatic_round_start_checkbox.pack()
+
+        ToolTip(sound_checkbox, msg="test tip")
 
 
 if __name__ == "__main__":
