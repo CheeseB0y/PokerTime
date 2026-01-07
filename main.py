@@ -7,12 +7,15 @@ import os
 import math
 import csv
 import tkinter as tk
+import pygame
 from tkinter import filedialog
 from pathlib import Path
 from tktooltip import ToolTip
 from PIL import Image, ImageTk
 
 BG_COLOR = "#0B6623"
+
+pygame.mixer.init()
 
 
 def resource_path(relative_path):
@@ -238,6 +241,7 @@ class Timer:
         self.is_paused = True
         self.time_remaining = game_page.game_state.time * 60
         self.time_var = tk.StringVar(value=self.format_time(self.time_remaining))
+        self.alarm_sound = pygame.mixer.Sound(resource_path("assets/alarm.wav"))
         self.timer_label = tk.Label(
             container,
             textvariable=self.time_var,
@@ -301,7 +305,11 @@ class Timer:
         else:
             self.time_var.set("0:00")
             self.game_page.timer_button.set_text("Reset Timer")
+            self.play_alarm_sound()
             self.game_page.flash_screen()
+
+    def play_alarm_sound(self):
+        self.alarm_sound.play()
 
     def format_time(self, time):
         """
