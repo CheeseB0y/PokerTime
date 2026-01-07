@@ -8,8 +8,8 @@ import math
 import csv
 import tkinter as tk
 from tkinter import filedialog
-from tktooltip import ToolTip
 from pathlib import Path
+from tktooltip import ToolTip
 from PIL import Image, ImageTk
 
 BG_COLOR = "#0B6623"
@@ -804,6 +804,8 @@ class EditorPage:
             None
         """
         documents_dir = Path.home() / "Documents"
+        if not documents_dir.exists():
+            documents_dir = Path.home()
         poker_dir = documents_dir / "PokerTime"
         poker_dir.mkdir(parents=True, exist_ok=True)
 
@@ -813,7 +815,7 @@ class EditorPage:
             defaultextension=".csv",
             initialdir=poker_dir,
             title="Choose where to save the game file.",
-            filetypes=(("CVS files", "*.csv"), ("All files", "*.*")),
+            filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
         )
 
         if self.from_landing_page:
@@ -837,13 +839,15 @@ class EditorPage:
             None
         """
         documents_dir = Path.home() / "Documents"
+        if not documents_dir.exists():
+            documents_dir = Path.home()
         poker_dir = documents_dir / "PokerTime"
         poker_dir.mkdir(parents=True, exist_ok=True)
 
         file = filedialog.askopenfilename(
             initialdir=poker_dir,
             title="Select a file",
-            filetypes=(("CVS files", "*.csv"), ("All files", "*.*")),
+            filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
         )
 
         rounds = []
