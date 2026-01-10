@@ -1,6 +1,6 @@
 import math
 import tkinter as tk
-import pygame
+from pygame import mixer
 from models.game_state import GameState
 from gui.editor_page import EditorPage
 from gui.game_overview_page import GameOverview
@@ -17,6 +17,7 @@ class GamePage:
 
     def __init__(self, ctx):
         self.ctx = ctx
+        self.ctx.refresh_round_values = self.refresh_round_values
 
         if self.ctx.rounds is not None:
             self.ctx.current_page.destroy()
@@ -286,7 +287,7 @@ class Timer:
         self.is_paused = True
         self.time_remaining = self.ctx.game_state.time * 60
         self.time_var = tk.StringVar(value=self.format_time(self.time_remaining))
-        self.alarm_sound = pygame.mixer.Sound(absolute_path("assets/alarm.wav"))
+        self.alarm_sound = mixer.Sound(absolute_path("assets/alarm.wav"))
         self.timer_label = tk.Label(
             container,
             textvariable=self.time_var,
