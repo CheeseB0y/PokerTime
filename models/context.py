@@ -1,4 +1,5 @@
 import tkinter as tk
+from config.manager import load_settings
 
 
 class AppContext:
@@ -9,3 +10,4 @@ class AppContext:
         self.current_page = None
         self.bg_color = None
         self.game_state = None
+        self.settings = load_settings()
