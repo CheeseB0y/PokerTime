@@ -123,22 +123,22 @@ class GamePage:
             )
             b_blind_label.pack(side="right", fill="both", expand=True, pady=10, padx=50)
 
+            self.ctx.next_round = self.next_round
             self.is_flashing = False
 
-    def flash_screen(self, duration=10, speed=500):
+    def flash_screen(self):
         """
         Flashes screen on timer completion
 
         Args:
-            duration (int, optional): number of screen flash cycles
-            speed (int, optional): time between flashes in miliseconds
+            None
 
         Returns:
             None
         """
         if self.ctx.settings.flash_screen:
             self.is_flashing = True
-            self.flash_1(duration, speed)
+            self.flash_1(self.ctx.settings.flash_duration)
 
     def stop_flashing(self):
         """
@@ -152,14 +152,13 @@ class GamePage:
         """
         self.is_flashing = False
 
-    def flash_1(self, duration, speed):
+    def flash_1(self, duration):
         """
         First part of flash sequence
         should not be called directly
 
         Args:
             duration (int): number of screen flash cycles
-            speed (int): time between flashes in miliseconds
 
         Returns:
             None
@@ -172,7 +171,7 @@ class GamePage:
             self.time_frame.configure(bg="black")
             self.timer.timer_label.configure(bg="black")
             self.blind_frame.configure(bg="black")
-            self.ctx.root.after(speed, lambda: self.flash_2(duration, speed))
+            self.ctx.root.after(500, lambda: self.flash_2(duration))
         else:
             self.ctx.root.configure(bg=BG_COLOR)
             self.round_frame.configure(bg=BG_COLOR)
@@ -182,14 +181,13 @@ class GamePage:
             self.timer.timer_label.configure(bg=BG_COLOR)
             self.blind_frame.configure(bg=BG_COLOR)
 
-    def flash_2(self, duration, speed):
+    def flash_2(self, duration):
         """
         Second part of flash sequence
         should not be called directly
 
         Args:
             duration (int): number of screen flash cycles
-            speed (int): time between flashes in miliseconds
 
         Returns:
             None
@@ -202,7 +200,7 @@ class GamePage:
             self.time_frame.configure(bg="white")
             self.timer.timer_label.configure(bg="white")
             self.blind_frame.configure(bg="white")
-            self.ctx.root.after(speed, lambda: self.flash_1(duration - 1, speed))
+            self.ctx.root.after(500, lambda: self.flash_1(duration - 1))
         else:
             self.ctx.root.configure(bg=BG_COLOR)
             self.round_frame.configure(bg=BG_COLOR)
@@ -239,8 +237,9 @@ class GamePage:
         Returns:
             None
         """
+        if not self.ctx.settings.auto_start_next_round:
+            self.stop_flashing()
         self.timer.pause()
-        self.stop_flashing()
         self.ctx.game_state.next_round()
         self.refresh_round_values()
 
@@ -350,20 +349,18 @@ class Timer:
         elif self.is_paused:
             pass
         else:
+            self.time_var.set("0:00")
+            self.play_alarm_sound()
+            self.ctx.current_page.flash_screen()
             if self.ctx.settings.auto_start_next_round:
-                self.time_var.set("0:00")
-                self.ctx.current_page.timer_button.set_text("Reset Timer")
-                self.play_alarm_sound()
-                self.ctx.current_page.flash_screen()
-                self.ctx.game_state.next_round()
+                self.ctx.next_round()
+                self.start()
             else:
-                self.time_var.set("0:00")
                 self.ctx.current_page.timer_button.set_text("Reset Timer")
-                self.play_alarm_sound()
-                self.ctx.current_page.flash_screen()
 
     def play_alarm_sound(self):
         if self.ctx.settings.play_alarm_sound:
+            self.alarm_sound.set_volume(self.ctx.settings.alarm_volume)
             self.alarm_sound.play()
 
     def format_time(self, time):
