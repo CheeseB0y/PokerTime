@@ -19,7 +19,9 @@ def load_settings() -> Settings:
     path = get_config_path()
 
     if not path.exists():
-        return Settings(DEFAULT_SETTINGS.copy())
+        settings = Settings(DEFAULT_SETTINGS.copy())
+        save_settings(settings)
+        return settings
 
     with open(path, "r", encoding="utf-8") as file:
         config = json.load(file)
@@ -27,7 +29,12 @@ def load_settings() -> Settings:
     merged = DEFAULT_SETTINGS.copy()
     merged.update(config)
 
-    return Settings(merged)
+    settings = Settings(merged)
+
+    if merged != config:
+        save_settings(settings)
+
+    return settings
 
 
 def save_settings(settings: Settings):
