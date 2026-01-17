@@ -136,8 +136,9 @@ class GamePage:
         Returns:
             None
         """
-        self.is_flashing = True
-        self.flash_1(duration, speed)
+        if self.ctx.settings.flash_screen:
+            self.is_flashing = True
+            self.flash_1(duration, speed)
 
     def stop_flashing(self):
         """
@@ -349,13 +350,21 @@ class Timer:
         elif self.is_paused:
             pass
         else:
-            self.time_var.set("0:00")
-            self.ctx.current_page.timer_button.set_text("Reset Timer")
-            self.play_alarm_sound()
-            self.ctx.current_page.flash_screen()
+            if self.ctx.settings.auto_start_next_round:
+                self.time_var.set("0:00")
+                self.ctx.current_page.timer_button.set_text("Reset Timer")
+                self.play_alarm_sound()
+                self.ctx.current_page.flash_screen()
+                self.ctx.game_state.next_round()
+            else:
+                self.time_var.set("0:00")
+                self.ctx.current_page.timer_button.set_text("Reset Timer")
+                self.play_alarm_sound()
+                self.ctx.current_page.flash_screen()
 
     def play_alarm_sound(self):
-        self.alarm_sound.play()
+        if self.ctx.settings.play_alarm_sound:
+            self.alarm_sound.play()
 
     def format_time(self, time):
         """
