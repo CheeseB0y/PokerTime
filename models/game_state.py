@@ -4,13 +4,14 @@ class GameState:
     Use for reference in other classes so there is no mixup
     """
 
-    def __init__(self, rounds):
+    def __init__(self, rounds=None):
         self.rounds = rounds
         self.round_index = 0
-        self.round_num = self.rounds[self.round_index].num
-        self.time = self.rounds[self.round_index].time
-        self.s_blind = self.rounds[self.round_index].s_blind
-        self.b_blind = self.rounds[self.round_index].b_blind
+        if self.rounds is not None:
+            self.round_num = self.rounds[self.round_index].num
+            self.time = self.rounds[self.round_index].time
+            self.s_blind = self.rounds[self.round_index].s_blind
+            self.b_blind = self.rounds[self.round_index].b_blind
 
     def next_round(self):
         """

@@ -2,7 +2,6 @@ import csv
 import tkinter as tk
 from tkinter import filedialog
 from pathlib import Path
-from gui.theme import BG_COLOR
 from models.round import Round
 
 
@@ -14,10 +13,10 @@ class EditorPage:
     import or export game files as csv
     """
 
-    def __init__(self, ctx, start_game_callback, new=False, from_landing_page=False):
+    def __init__(self, ctx, game_page_callback, new=False):
         self.window = tk.Toplevel(ctx.root)
         self.ctx = ctx
-        self.from_landing_page = from_landing_page
+        self.game_page_callback = game_page_callback
         if new:
             self.window.title("New Game")
             self.rounds = []
@@ -26,7 +25,7 @@ class EditorPage:
             self.rounds = self.ctx.game_state.rounds
 
         self.window.geometry("800x600")
-        self.window.configure(bg=BG_COLOR)
+        self.window.configure(bg=self.ctx.bg_color)
         self.window.columnconfigure((0, 1, 2, 3, 4, 5), weight=1)
 
         round_column_heading = tk.Frame(self.window, bg="red")
@@ -95,7 +94,7 @@ class EditorPage:
             self.b_blind_list[index].pack(fill="both", expand=True)
             self.b_blind_list[index].insert(tk.END, r.b_blind)
 
-        button_frame = tk.Frame(self.window, bg=BG_COLOR)
+        button_frame = tk.Frame(self.window, bg=self.ctx.bg_color)
         button_frame.grid(row=2, column=1, columnspan=4, sticky="NESW")
         tk.Button(
             button_frame,
@@ -118,14 +117,13 @@ class EditorPage:
             bg="black",
             fg="white",
         ).pack(side="left", fill="both", expand=True)
-        if from_landing_page:
-            tk.Button(
-                button_frame,
-                text="Start Game",
-                command=start_game_callback,
-                bg="red",
-                fg="white",
-            ).pack(side="left", fill="both", expand=True)
+        tk.Button(
+            button_frame,
+            text="Start Game",
+            command=self.start_game,
+            bg="red",
+            fg="white",
+        ).pack(side="left", fill="both", expand=True)
 
     def refresh_editor(self):
         """
@@ -170,6 +168,10 @@ class EditorPage:
             self.b_blind_list[index].pack(fill="both", expand=True)
             self.b_blind_list[index].insert(tk.END, r.b_blind)
 
+    def start_game(self):
+        self.ctx.game_state.update_rounds(self.rounds)
+        self.game_page_callback(self.ctx)
+
     def save_game(self):
         """
         Save editor values
@@ -201,11 +203,6 @@ class EditorPage:
                 rounds.append(Round(i + 1))
             except ValueError:
                 rounds.append(Round(i + 1))
-        if self.from_landing_page:
-            self.ctx.rounds = rounds
-        else:
-            self.ctx.game_state.update_rounds(rounds)
-            self.ctx.refresh_round_values()
         self.rounds = rounds
         self.refresh_editor()
 
@@ -234,10 +231,7 @@ class EditorPage:
             filetypes=(("CSV files", "*.csv"), ("All files", "*.*")),
         )
 
-        if self.from_landing_page:
-            source = self.ctx.rounds
-        else:
-            source = self.ctx.game_state.rounds
+        source = self.rounds
 
         if file:
             with open(file, "w", newline="", encoding="utf-8") as f:
@@ -274,11 +268,5 @@ class EditorPage:
                     rounds.append(
                         Round(int(row[0]), int(row[1]), int(row[2]), int(row[3]))
                     )
-
-        if self.from_landing_page:
-            self.ctx.rounds = rounds
-        else:
-            self.ctx.game_state.update_rounds(rounds)
-            self.ctx.refresh_round_values()
         self.rounds = rounds
         self.refresh_editor()
