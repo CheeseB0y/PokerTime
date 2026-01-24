@@ -23,6 +23,6 @@ class Clock:
         if self.ctx.settings.use_24_hour_clock:
             self.clock_text.set(time.strftime("%H:%M"))
         else:
-            self.clock_text.set(time.strftime("%I:%M %p"))
+            self.clock_text.set(time.strftime("%I:%M %p").lstrip("0"))
         next_minute = 60 - time.localtime().tm_sec
         self.ctx.root.after(next_minute * 1000, self.update_time)
