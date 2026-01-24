@@ -23,12 +23,13 @@ class GameState:
         Returns:
             None
         """
-        if len(self.rounds) > self.round_index + 1:
-            self.round_index += 1
-        self.round_num = self.rounds[self.round_index].num
-        self.time = self.rounds[self.round_index].time
-        self.s_blind = self.rounds[self.round_index].s_blind
-        self.b_blind = self.rounds[self.round_index].b_blind
+        if self.rounds is not None:
+            if len(self.rounds) > self.round_index + 1:
+                self.round_index += 1
+            self.round_num = self.rounds[self.round_index].num
+            self.time = self.rounds[self.round_index].time
+            self.s_blind = self.rounds[self.round_index].s_blind
+            self.b_blind = self.rounds[self.round_index].b_blind
 
     def restart_game(self):
         """
@@ -40,11 +41,12 @@ class GameState:
         Returns:
             None
         """
-        self.round_index = 0
-        self.round_num = self.rounds[self.round_index].num
-        self.time = self.rounds[self.round_index].time
-        self.s_blind = self.rounds[self.round_index].s_blind
-        self.b_blind = self.rounds[self.round_index].b_blind
+        if self.rounds is not None:
+            self.round_index = 0
+            self.round_num = self.rounds[self.round_index].num
+            self.time = self.rounds[self.round_index].time
+            self.s_blind = self.rounds[self.round_index].s_blind
+            self.b_blind = self.rounds[self.round_index].b_blind
 
     def update_rounds(self, rounds):
         """
@@ -56,9 +58,11 @@ class GameState:
         Returns:
             None
         """
+        # TODO Sanitize round input values account for edge cases
         self.rounds = rounds
-        self.round_index = min(self.round_index, len(rounds) - 1)
-        self.round_num = self.rounds[self.round_index].num
-        self.time = self.rounds[self.round_index].time
-        self.s_blind = self.rounds[self.round_index].s_blind
-        self.b_blind = self.rounds[self.round_index].b_blind
+        if self.rounds is not None:
+            self.round_index = min(self.round_index, len(rounds) - 1)
+            self.round_num = self.rounds[self.round_index].num
+            self.time = self.rounds[self.round_index].time
+            self.s_blind = self.rounds[self.round_index].s_blind
+            self.b_blind = self.rounds[self.round_index].b_blind
