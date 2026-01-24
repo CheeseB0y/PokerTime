@@ -13,10 +13,10 @@ class EditorPage:
     import or export game files as csv
     """
 
-    def __init__(self, ctx, game_page_callback, new=False):
-        self.window = tk.Toplevel(ctx.root)
+    def __init__(self, ctx, new=False):
         self.ctx = ctx
-        self.game_page_callback = game_page_callback
+        self.window = tk.Toplevel(self.ctx.root)
+
         if new:
             self.window.title("New Game")
             self.rounds = []
@@ -170,7 +170,8 @@ class EditorPage:
 
     def start_game(self):
         self.ctx.game_state.update_rounds(self.rounds)
-        self.game_page_callback(self.ctx)
+        # TODO Account for edge case where start game function might not exist for some reason
+        self.ctx.current_page.start_game(self.ctx)
 
     def save_game(self):
         """

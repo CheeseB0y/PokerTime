@@ -26,27 +26,12 @@ class GamePage:
         )
         self.b_blind = tk.StringVar(value=f"Big Blind: {self.ctx.game_state.b_blind:,}")
 
-        def start_game(ctx):
-            GamePage(ctx)
-
-        def new_game():
-            EditorPage(self.ctx, start_game, new=True)
-
-        def edit_game():
-            EditorPage(self.ctx, start_game)
-
-        def overview():
-            GameOverview(self.ctx)
-
-        def settings():
-            SettingsPage(self.ctx)
-
         MenuBar(
-            self.ctx.root,
-            new_game_callback=new_game,
-            edit_game_callback=edit_game,
-            overview_callback=overview,
-            settings_callback=settings,
+            self.ctx,
+            new_game_callback=self.new_game,
+            edit_game_callback=self.edit_game,
+            overview_callback=self.overview,
+            settings_callback=self.settings,
             restart_callback=self.restart_game,
         )
         self.ctx.root.columnconfigure((0, 1, 2), weight=1)
@@ -232,6 +217,21 @@ class GamePage:
         self.timer.pause()
         self.ctx.game_state.next_round()
         self.refresh_round_values()
+
+    def start_game(self, ctx):
+        GamePage(ctx)
+
+    def new_game(self):
+        EditorPage(self.ctx, new=True)
+
+    def edit_game(self):
+        EditorPage(self.ctx)
+
+    def overview(self):
+        GameOverview(self.ctx)
+
+    def settings(self):
+        SettingsPage(self.ctx)
 
     def restart_game(self):
         """

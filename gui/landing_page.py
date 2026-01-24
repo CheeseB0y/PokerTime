@@ -16,7 +16,6 @@ class LandingPage:
     def __init__(self, ctx):
         self.ctx = ctx
         self.ctx.current_page = self
-        self.ctx.current_page.landing_page = True
 
         self.ctx.root.columnconfigure((0, 1, 2), weight=1)
         self.ctx.root.rowconfigure((0, 1), weight=1)
@@ -47,11 +46,7 @@ class LandingPage:
         new_game_button = tk.Button(
             button_frame,
             text="New Game",
-            command=lambda: EditorPage(
-                ctx,
-                new=True,
-                game_page_callback=self.game_page_callback,
-            ),
+            command=lambda: EditorPage(self.ctx, new=True),
             bg="red",
             fg="white",
             relief="raised",
@@ -59,7 +54,7 @@ class LandingPage:
         )
         new_game_button.pack(fill="both", expand=True, padx=10, pady=10)
 
-    def game_page_callback(self, ctx):
+    def start_game(self, ctx):
         GamePage(ctx)
 
     def destroy(self):
