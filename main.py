@@ -25,7 +25,6 @@ def main():
     ctx.root.title("Poker Time")
     ctx.root.geometry("1200x900")
     ctx.root.configure(bg=BG_COLOR)
-    ctx.is_landing_page = True
     ctx.current_page = LandingPage(ctx)
     ctx.root.mainloop()
 

@@ -70,10 +70,10 @@ class GamePage:
             fg="white",
             font=("Arial", 60, "bold"),
         )
-        self.clock = Clock(self.clock_frame, ctx)
+        self.clock = Clock(self.ctx, self.clock_frame)
         self.round_number_label.pack(fill="both", expand=True)
-        self.timer = Timer(self.time_frame, self.ctx)
-        self.timer_button = TimerButton(self.button_frame, ctx)
+        self.timer = Timer(self.ctx, self.time_frame)
+        self.timer_button = TimerButton(self.ctx, self.button_frame)
         next_button = tk.Button(
             self.button_frame,
             text="Next Round",
