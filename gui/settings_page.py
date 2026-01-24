@@ -16,6 +16,18 @@ class SettingsPage:
         self.window.geometry("800x600")
         self.window.configure(bg=self.ctx.bg_color)
 
+        self.window.columnconfigure((0, 1), weight=1)
+        self.window.rowconfigure((0, 1, 2), weight=1)
+
+        self.title_frame = tk.Frame(self.window, bg="black")
+        self.title_frame.grid(row=0, column=0, columnspan=2, sticky="NESW")
+        self.left_frame = tk.Frame(self.window, bg=self.ctx.bg_color)
+        self.left_frame.grid(row=1, column=0, sticky="NESW")
+        self.right_frame = tk.Frame(self.window, bg=self.ctx.bg_color)
+        self.right_frame.grid(row=1, column=1, sticky="NESW")
+        self.button_frame = tk.Frame(self.window, bg=self.ctx.bg_color)
+        self.button_frame.grid(row=2, column=0, columnspan=2, sticky="NESW")
+
         self.play_alarm_sound_var = tk.BooleanVar(
             value=self.ctx.settings.play_alarm_sound
         )
@@ -29,63 +41,96 @@ class SettingsPage:
             value=self.ctx.settings.use_24_hour_clock
         )
 
+        self.title_label = tk.Label(
+            self.title_frame,
+            text="Settings",
+            bg="black",
+            fg="white",
+            font=("Arial", 32, "bold"),
+        )
+        self.title_label.pack(fill="both", expand=True, padx=10, pady=10)
+
         self.play_alarm_sound_checkbox = ttk.Checkbutton(
-            self.window,
+            self.left_frame,
             text="Play sound on round finish",
             variable=self.play_alarm_sound_var,
+            command=self.volume_toggle,
         )
-        self.play_alarm_sound_checkbox.pack()
+        self.play_alarm_sound_checkbox.pack(fill="both", padx=10, pady=10)
+        self.flash_screen_checkbox = ttk.Checkbutton(
+            self.left_frame,
+            text="Flash screen on round finish",
+            variable=self.flash_screen_var,
+            command=self.flash_duration_toggle,
+        )
+        self.flash_screen_checkbox.pack(fill="both", padx=10, pady=10)
+        self.auto_start_next_round_checkbox = ttk.Checkbutton(
+            self.left_frame,
+            text="Start next round automatically",
+            variable=self.auto_start_next_round_var,
+        )
+        self.auto_start_next_round_checkbox.pack(fill="both", padx=10, pady=10)
+        self.use_24_hour_clock_checkbox = ttk.Checkbutton(
+            self.left_frame,
+            text="24 hour clock",
+            variable=self.use_24_hour_clock_var,
+        )
+        self.use_24_hour_clock_checkbox.pack(fill="both", padx=10, pady=10)
 
+        self.flash_duration_label = tk.Label(self.right_frame, text="Flash Duration")
+        self.flash_duration_label.pack(fill="both", padx=10, pady=10)
+        self.flash_duration_spinbox = ttk.Spinbox(
+            self.right_frame,
+            from_=1,
+            to=20,
+            textvariable=self.flash_duration_var,
+            width=5,
+        )
+        self.flash_duration_spinbox.pack(fill="both", padx=10, pady=10)
+        self.alarm_volume_label = tk.Label(self.right_frame, text="Alarm Volume")
+        self.alarm_volume_label.pack(fill="both", padx=10, pady=10)
         self.alarm_volume_slider = ttk.Scale(
-            self.window,
+            self.right_frame,
             from_=0.0,
             to=1.0,
             orient="horizontal",
             variable=self.alarm_volume_var,
         )
-        self.alarm_volume_slider.pack()
+        self.alarm_volume_slider.pack(fill="both", padx=10, pady=10)
 
-        self.flash_screen_checkbox = ttk.Checkbutton(
-            self.window,
-            text="Flash screen on round finish",
-            variable=self.flash_screen_var,
-        )
-        self.flash_screen_checkbox.pack()
-
-        self.flash_duration_spinbox = tk.Spinbox(
-            self.window, from_=1, to=20, textvariable=self.flash_duration_var, width=5
-        )
-        self.flash_duration_spinbox.pack()
-
-        self.auto_start_next_round_checkbox = ttk.Checkbutton(
-            self.window,
-            text="Start next round automatically",
-            variable=self.auto_start_next_round_var,
-        )
-        self.auto_start_next_round_checkbox.pack()
-
-        self.use_24_hour_clock_checkbox = ttk.Checkbutton(
-            self.window,
-            text="24 hour clock",
-            variable=self.use_24_hour_clock_var,
-        )
-        self.use_24_hour_clock_checkbox.pack()
-
-        save_changes_button = tk.Button(
-            self.window,
+        save_changes_button = ttk.Button(
+            self.button_frame,
             text="Save Changes",
             command=self.save_changes,
         )
-        save_changes_button.pack()
-
-        apply_changes_button = tk.Button(
-            self.window,
+        save_changes_button.pack(
+            fill="both", expand=True, padx=10, pady=10, side="left"
+        )
+        apply_changes_button = ttk.Button(
+            self.button_frame,
             text="Apply Changes",
             command=self.apply_changes,
         )
-        apply_changes_button.pack()
+        apply_changes_button.pack(
+            fill="both", expand=True, padx=10, pady=10, side="left"
+        )
+
+        self.flash_duration_toggle()
+        self.volume_toggle()
 
         ToolTip(self.play_alarm_sound_checkbox, msg="test tip")
+
+    def flash_duration_toggle(self):
+        if self.flash_screen_var.get():
+            self.flash_duration_spinbox.config(state="normal")
+        else:
+            self.flash_duration_spinbox.config(state="disabled")
+
+    def volume_toggle(self):
+        if self.play_alarm_sound_var.get():
+            self.alarm_volume_slider.config(state="normal")
+        else:
+            self.alarm_volume_slider.config(state="disabled")
 
     def save_changes(self):
         self.update_settings()
