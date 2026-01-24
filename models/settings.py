@@ -5,6 +5,7 @@ class Settings:
         self.flash_screen = config["flash_screen"]
         self.flash_duration = config["flash_duration"]
         self.auto_start_next_round = config["auto_start_next_round"]
+        self.use_24_hour_clock = config["use_24_hour_clock"]
 
     def to_dict(self) -> dict:
         return {
@@ -13,4 +14,5 @@ class Settings:
             "flash_screen": self.flash_screen,
             "flash_duration": self.flash_duration,
             "auto_start_next_round": self.auto_start_next_round,
+            "24_hour_clock": self.use_24_hour_clock,
         }

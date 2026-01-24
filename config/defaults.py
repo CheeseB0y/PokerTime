@@ -4,4 +4,5 @@ DEFAULT_SETTINGS = {
     "flash_screen": True,
     "flash_duration": 5,
     "auto_start_next_round": True,
+    "use_24_hour_clock": False,
 }
