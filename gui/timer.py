@@ -11,7 +11,9 @@ class Timer:
     Handles start/stop formatting and other logic
     """
 
-    def __init__(self, ctx, container):
+    def __init__(
+        self, ctx, container, bg="black", fg="white", font=("Arial", 120, "bold")
+    ):
         self.ctx = ctx
         self.is_paused = True
         self.time_remaining = self.ctx.game_state.time * 60
@@ -20,9 +22,9 @@ class Timer:
         self.timer_label = tk.Label(
             container,
             textvariable=self.time_var,
-            bg=self.ctx.bg_color,
-            fg="white",
-            font=("Arial", 120, "bold"),
+            bg=bg,
+            fg=fg,
+            font=font,
         )
         self.timer_label.pack(fill="both", expand=True)
 
@@ -116,17 +118,25 @@ class TimerButton:
     abstracted so that the button text can be easily modified
     """
 
-    def __init__(self, ctx, container):
+    def __init__(
+        self,
+        ctx,
+        container,
+        bg="red",
+        fg="white",
+        font=("Arial", 30, "bold"),
+        relief="raised",
+    ):
         self.ctx = ctx
         self.timer_button_text = tk.StringVar(value="Start Timer")
         timer_button = tk.Button(
             container,
             textvariable=self.timer_button_text,
             command=ctx.current_page.timer.start,
-            bg="red",
-            fg="white",
-            font=("Arial", 30, "bold"),
-            relief="raised",
+            bg=bg,
+            fg=fg,
+            font=font,
+            relief=relief,
         )
         timer_button.pack(fill="both", expand=True, pady=50, padx=10)
 
