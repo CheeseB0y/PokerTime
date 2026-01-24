@@ -117,6 +117,7 @@ class TimerButton:
     """
 
     def __init__(self, ctx, container):
+        self.ctx = ctx
         self.timer_button_text = tk.StringVar(value="Start Timer")
         timer_button = tk.Button(
             container,

@@ -9,6 +9,7 @@ class SettingsPage:
     """
 
     def __init__(self, ctx):
+        self.ctx = ctx
         window = tk.Toplevel(ctx.root)
         window.title("Settings")
         window.geometry("800x600")

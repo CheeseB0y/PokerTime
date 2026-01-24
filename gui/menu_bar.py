@@ -9,15 +9,16 @@ class MenuBar:
 
     def __init__(
         self,
-        root,
+        ctx,
         new_game_callback,
         edit_game_callback,
         overview_callback,
         settings_callback,
         restart_callback,
     ):
-        menubar = tk.Menu(root, bg="black", fg="white", relief="raised")
-        root.config(menu=menubar)
+        self.ctx = ctx
+        menubar = tk.Menu(self.ctx.root, bg="black", fg="white", relief="raised")
+        self.ctx.root.config(menu=menubar)
 
         option_menu = tk.Menu(menubar, tearoff=0, bg="black", fg="white")
         menubar.add_cascade(label="Options", menu=option_menu)
