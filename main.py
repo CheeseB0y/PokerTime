@@ -2,11 +2,6 @@
 Poker Time is a simple timer application built for poker tournaments.
 """
 
-import os
-
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
-from pygame import mixer
 from models.context import AppContext
 from gui.landing_page import LandingPage
 from gui.theme import BG_COLOR
@@ -18,8 +13,6 @@ def main():
 
     Initalizes basic program functions and starts on the landing page
     """
-
-    mixer.init()
 
     ctx = AppContext()
     ctx.root.title("Poker Time")

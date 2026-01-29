@@ -1,7 +1,5 @@
 import math
 import tkinter as tk
-from pygame import mixer
-from utils.absolute_path import absolute_path
 
 
 class Timer:
@@ -11,20 +9,17 @@ class Timer:
     Handles start/stop formatting and other logic
     """
 
-    def __init__(
-        self, ctx, container, bg="black", fg="white", font=("Arial", 120, "bold")
-    ):
+    def __init__(self, ctx, container, bg="black", fg="white"):
         self.ctx = ctx
         self.is_paused = True
         self.time_remaining = self.ctx.game_state.time * 60
         self.time_var = tk.StringVar(value=self.format_time(self.time_remaining))
-        self.alarm_sound = mixer.Sound(absolute_path("assets/alarm.wav"))
         self.timer_label = tk.Label(
             container,
             textvariable=self.time_var,
             bg=bg,
             fg=fg,
-            font=font,
+            font=self.ctx.font["timer"],
         )
         self.timer_label.pack(fill="both", expand=True)
 
@@ -81,18 +76,13 @@ class Timer:
             pass
         else:
             self.time_var.set("0:00")
-            self.play_alarm_sound()
+            self.ctx.sound.play_alarm_sound()
             self.ctx.current_page.flash_screen()
             if self.ctx.settings.auto_start_next_round:
                 self.ctx.next_round()
                 self.start()
             else:
                 self.ctx.current_page.timer_button.set_text("Reset Timer")
-
-    def play_alarm_sound(self):
-        if self.ctx.settings.play_alarm_sound:
-            self.alarm_sound.set_volume(self.ctx.settings.alarm_volume)
-            self.alarm_sound.play()
 
     def format_time(self, time):
         """
