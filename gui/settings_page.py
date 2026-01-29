@@ -14,9 +14,10 @@ class SettingsPage:
         self.window = tk.Toplevel(ctx.root)
         self.window.title("Settings")
         self.window.geometry("800x600")
+        self.window.resizable(False, False)
         self.window.configure(bg=self.ctx.bg_color)
 
-        self.window.columnconfigure((0, 1), weight=1)
+        self.window.columnconfigure((0, 1), weight=1, uniform="columns")
         self.window.rowconfigure((0, 1, 2), weight=1)
 
         self.title_frame = tk.Frame(self.window, bg="black")
@@ -40,6 +41,7 @@ class SettingsPage:
         self.use_24_hour_clock_var = tk.BooleanVar(
             value=self.ctx.settings.use_24_hour_clock
         )
+        self.ui_scale_var = tk.DoubleVar(value=self.ctx.settings.scale)
 
         self.title_label = tk.Label(
             self.title_frame,
@@ -97,22 +99,58 @@ class SettingsPage:
             variable=self.alarm_volume_var,
         )
         self.alarm_volume_slider.pack(fill="both", padx=10, pady=10)
+        self.alarm_volume_test_button = tk.Button(
+            self.right_frame,
+            text="Test Alarm",
+            command=lambda: self.ctx.sound.play_alarm_sound(
+                self.alarm_volume_var.get()
+            ),
+        )
+        self.alarm_volume_test_button.pack(fill="both", padx=10, pady=10)
+        self.ui_scale_label = tk.Label(self.right_frame, text="UI Scale")
+        self.ui_scale_label.pack(fill="both", padx=10, pady=10)
+        self.ui_scale_spinbox = ttk.Spinbox(
+            self.right_frame,
+            from_=1,
+            to=2,
+            increment=0.1,
+            format="%.1f",
+            textvariable=self.ui_scale_var,
+            width=5,
+        )
+        self.ui_scale_spinbox.pack(fill="both", padx=10, pady=10)
 
-        save_changes_button = ttk.Button(
+        save_changes_button = tk.Button(
             self.button_frame,
             text="Save Changes",
+            bg="red",
+            fg="white",
+            font=self.ctx.font["button"],
+            relief="raised",
             command=self.save_changes,
         )
         save_changes_button.pack(
-            fill="both", expand=True, padx=10, pady=10, side="left"
+            fill="both",
+            expand=True,
+            padx=self.ctx.spacing["md"],
+            pady=self.ctx.spacing["md"],
+            side="left",
         )
-        apply_changes_button = ttk.Button(
+        apply_changes_button = tk.Button(
             self.button_frame,
             text="Apply Changes",
+            bg="black",
+            fg="white",
+            font=self.ctx.font["button"],
+            relief="raised",
             command=self.apply_changes,
         )
         apply_changes_button.pack(
-            fill="both", expand=True, padx=10, pady=10, side="left"
+            fill="both",
+            expand=True,
+            padx=self.ctx.spacing["md"],
+            pady=self.ctx.spacing["md"],
+            side="left",
         )
 
         self.flash_duration_toggle()
@@ -145,6 +183,7 @@ class SettingsPage:
         self.ctx.settings.flash_screen = self.flash_screen_var.get()
         self.ctx.settings.flash_duration = self.flash_duration_var.get()
         self.ctx.settings.auto_start_next_round = self.auto_start_next_round_var.get()
+        self.ctx.settings.scale = self.ui_scale_var.get()
         if self.ctx.settings.use_24_hour_clock is not self.use_24_hour_clock_var.get():
             self.ctx.settings.use_24_hour_clock = self.use_24_hour_clock_var.get()
             self.ctx.clock.redraw()
