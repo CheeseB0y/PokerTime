@@ -1,4 +1,5 @@
 DEFAULT_SETTINGS = {
+    "scale": 1,
     "play_alarm_sound": True,
     "alarm_volume": 0.5,
     "flash_screen": True,
